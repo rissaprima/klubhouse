@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Klubhouse — Circular Operations Intelligence for Green Ops</title>
+<meta name="description" content="Klubhouse connects equipment, maintenance, resource use, and environmental signals into one Green Ops layer to extend asset lifecycles and measure impact."/>
+<meta name="author" content="Klubhouse"/>
+<meta name="theme-color" content="#030410"/>
+<!-- TODO: confirm the final domain. klubhouse.web.id is assumed (same pattern as kapsule.web.id / kodeflux.web.id). If different, update canonical + og:url + og:image + twitter:image. -->
+<link rel="canonical" href="https://klubhouse.web.id/"/>
+<meta property="og:site_name" content="Klubhouse"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Klubhouse — Circular Operations Intelligence for Green Ops"/>
+<meta property="og:description" content="Klubhouse connects equipment, maintenance, resource use, and environmental signals into one Green Ops layer to extend asset lifecycles and measure impact."/>
+<meta property="og:url" content="https://klubhouse.web.id/"/>
+<!-- og-image.png = klubhouse-og-image.png; upload it to the site's public/ folder or the link preview will have no picture -->
+<meta property="og:image" content="https://klubhouse.web.id/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="klub:house — Circular Operations Intelligence"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Klubhouse — Circular Operations Intelligence for Green Ops"/>
+<meta name="twitter:description" content="Klubhouse connects equipment, maintenance, resource use, and environmental signals into one Green Ops layer to extend asset lifecycles and measure impact."/>
+<meta name="twitter:image" content="https://klubhouse.web.id/og-image.png"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23030410'/%3E%3Ccircle%20cx='32'%20cy='21'%20r='7.5'%20fill='%230CC0DF'/%3E%3Ccircle%20cx='32'%20cy='43'%20r='7.5'%20fill='%238C52FF'/%3E%3C/svg%3E"/>
+<style>
+  :root{
+    --bg:#030410; --panel:#06081A; --panel2:#090B22; --card:#090B22; --card-hi:#0E1129;
+    --line:#161B36; --line-hi:#1E2444;
+    --text:#EAEAF4; --muted:#8388A8; --soft:#464B6E;
+    --cyan:#0CC0DF; --cyan-br:#3DD8EE; --purple:#8C52FF; --purple-br:#A374FF;
+    --amber:#F59E0B; --danger:#EF4444; --max:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .grid-bg{position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black 0,rgba(0,0,0,.45) 52%,transparent 96%)}
+  .glow{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;opacity:.16;background:linear-gradient(135deg,var(--cyan),var(--purple))}
+  .wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+  nav{height:76px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5}
+  .site-header{position:sticky;top:0;z-index:50;border-bottom:1px solid transparent;background:rgba(3,4,16,0);transition:background-color .3s ease,border-color .3s ease,backdrop-filter .3s ease}
+  .site-header.scrolled{background:rgba(3,4,16,.82);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border-bottom-color:var(--line-hi)}
+  .brand{font-weight:800;letter-spacing:-.8px;font-size:22px}.brand .k{color:var(--cyan)} .brand .h{color:var(--purple)} .brand .colon{color:var(--text)}
+  .navlinks{display:flex;align-items:center;gap:26px;color:var(--muted);font-size:13px}.navlinks a:hover{color:white}
+  .nav-right{display:flex;align-items:center;gap:12px}
+  .nav-toggle{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4.5px;width:36px;height:36px;background:rgba(163,116,255,.06);border:1px solid var(--line-hi);border-radius:9px;cursor:pointer;flex-shrink:0}
+  .nav-toggle span{display:block;width:15px;height:1.4px;background:var(--text);border-radius:1px;transition:transform .25s ease,opacity .2s ease}
+  .nav-toggle.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+  .nav-toggle.open span:nth-child(2){opacity:0}
+  .nav-toggle.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+  .nav-dropdown{display:none;position:fixed;left:0;right:0;top:76px;z-index:30;background:rgba(6,8,26,.94);backdrop-filter:blur(10px) saturate(140%);-webkit-backdrop-filter:blur(10px) saturate(140%);border-bottom:1px solid rgba(163,116,255,.25);box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.03)}
+  .nav-dropdown.open{display:block;animation:navDrop .28s ease forwards}
+  @keyframes navDrop{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  .nav-dropdown-inner{display:flex;flex-direction:column;padding:8px 0 20px;gap:2px}
+  .nav-dropdown-inner a{padding:14px 4px;font-size:14px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav-dropdown-inner a:hover{color:white}
+  .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:9px;border:1px solid var(--line);font-weight:700;font-size:13px;transition:.2s;background:#06081A}
+  .btn:hover{transform:translateY(-1px);border-color:var(--purple)}.btn.primary{background:var(--cyan);color:#001318;border-color:var(--cyan)}
+  .btn.ghost{background:transparent;color:var(--text)}
+  .hero{min-height:760px;padding:92px 0 68px;position:relative;text-align:center;overflow:hidden}
+  .hero .glow{width:520px;height:240px;left:50%;transform:translateX(-50%);top:190px}
+  .hero-orb{position:absolute;left:50%;top:420px;transform:translate(-50%,-50%);width:820px;height:460px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(closest-side,rgba(140,82,255,.26),rgba(12,192,223,.15) 52%,transparent 74%);filter:blur(6px);animation:orbPulse 6.5s ease-in-out infinite}
+  @keyframes orbPulse{0%,100%{opacity:.65;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}}
+  .hero-ring{position:absolute;left:50%;top:420px;transform:translate(-50%,-50%);width:680px;height:680px;border-radius:50%;border:1px solid rgba(163,116,255,.16);pointer-events:none;z-index:0;animation:ringSpin 44s linear infinite}
+  .hero-ring:after{content:"";position:absolute;inset:38px;border-radius:50%;border:1px dashed rgba(61,216,238,.14)}
+  @keyframes ringSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .eyebrow{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--cyan);font-weight:800;margin-bottom:18px}
+  h1{font-size:clamp(44px,7vw,84px);line-height:.98;letter-spacing:-4px;max-width:960px;margin:0 auto 22px;font-weight:800}
+  .lead{font-size:clamp(16px,2.1vw,20px);line-height:1.6;color:var(--muted);max-width:760px;margin:0 auto 28px}
+  .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .dashboard-shell{margin:70px auto 0;max-width:1060px;background:#06081A;border:1px solid #1E2444;border-radius:16px;box-shadow:0 32px 110px rgba(0,0,0,.55),0 0 90px rgba(140,82,255,.10);padding:16px;transform:perspective(1200px) rotateX(1.6deg);position:relative;z-index:2}
+  .hero .eyebrow,.hero h1,.hero .lead,.hero .hero-actions{position:relative;z-index:2}
+  .dash-top{height:48px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6px 12px}
+  .dash-left{display:flex;align-items:center;gap:10px}
+  .dash-menu-btn{width:26px;height:26px;border:1px solid var(--line-hi);border-radius:7px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;flex-shrink:0}
+  .dash-menu-btn span{width:11px;height:1.2px;background:var(--muted)}
+  .dash-tag{font-size:9px;font-weight:700;letter-spacing:1.2px;color:var(--muted);border:1px solid var(--line-hi);border-radius:6px;padding:5px 10px;text-transform:uppercase;white-space:nowrap;animation:tagGlow 2.6s ease-in-out infinite}
+  @keyframes tagGlow{0%,100%{box-shadow:0 0 4px rgba(140,82,255,.2);border-color:var(--line-hi)}50%{box-shadow:0 0 9px 1px rgba(140,82,255,.4);border-color:rgba(140,82,255,.55)}}
+  .dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-top:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:left;min-height:180px;opacity:0;transform:translateY(12px);animation:build .55s ease forwards}
+  .card:nth-child(1){animation-delay:.1s}.card:nth-child(2){animation-delay:.2s}.card:nth-child(3){animation-delay:.3s}.card:nth-child(4){animation-delay:.4s}.card:nth-child(5){animation-delay:.5s}.card:nth-child(6){animation-delay:.6s}
+  @keyframes build{to{opacity:1;transform:none}}
+  .kicker{font-size:9px;color:var(--soft);letter-spacing:1px;text-transform:uppercase}.ctitle{font-size:13px;font-weight:700;margin:4px 0 16px}.big{font-size:27px;font-weight:800;letter-spacing:-1px}.sub{font-size:10px;color:var(--muted);margin-top:3px}
+  .bars{display:flex;align-items:flex-end;gap:5px;height:60px;margin-top:16px}.bars i{flex:1;background:#1E2444;border-radius:4px 4px 0 0;animation:grow 1.2s ease both}.bars i:nth-child(2n){background:#242A50}.bars i:last-child{background:var(--cyan)}
+  @keyframes grow{from{height:5%!important}}
+  .linechart{height:62px;margin-top:16px;position:relative}.linechart svg{width:100%;height:100%}.stroke{stroke:var(--purple-br);stroke-width:2.3;fill:none;stroke-dasharray:380;stroke-dashoffset:380;animation:draw 1.8s .7s ease forwards}.area{fill:rgba(163,116,255,.1)}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .ctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+  .live-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:700;color:#22C55E;background:rgba(34,197,94,.14);border-radius:5px;padding:3px 8px 3px 6px;text-transform:uppercase;letter-spacing:.4px;flex-shrink:0}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#22C55E;animation:liveBlink 1.4s ease-in-out infinite}
+  @keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.25}}
+  .donut-wrap{display:flex;align-items:center;gap:14px;margin-top:14px}
+  .legend{display:flex;flex-direction:column;gap:7px;font-size:11px;color:var(--muted)}
+  .legend-row{display:flex;align-items:center;gap:6px}.legend-row b{margin-left:auto;color:var(--text)}
+  .legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+  .gauge-wrap{display:flex;flex-direction:column;align-items:center;margin-top:6px}
+  .gauge-wrap svg{width:148px;height:97px}
+  .gauge-val{font-size:26px;font-weight:800;margin-top:-16px}
+  .stack{margin-top:24px;display:grid;gap:9px}.row{display:grid;grid-template-columns:60px 1fr 42px;align-items:center;gap:8px;font-size:9px;color:var(--muted)}.track{height:7px;background:#161B36;border-radius:8px;overflow:hidden}.fill{height:100%;background:var(--cyan);border-radius:8px}
+  .insight{font-size:12px;line-height:1.55;color:#8388A8;margin-top:18px;padding:12px;border-left:2px solid var(--cyan);background:#0E1129;border-radius:6px}
+
+  .logos{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 0;overflow:hidden;background:#030410}.marquee{display:flex;width:max-content;gap:40px;animation:marquee 26s linear infinite;align-items:center}@keyframes marquee{to{transform:translateX(-50%)}}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:9px 4px;border:none;background:transparent;color:#8388A8;font-weight:700;font-size:14px;white-space:nowrap}
+  .chip svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.9;flex-shrink:0}
+  .loop{padding:34px 0;text-align:center;border-bottom:1px solid var(--line)}.loop small{color:var(--soft);letter-spacing:1.8px;font-weight:800}.loopline{margin-top:12px;font-size:clamp(17px,2.2vw,24px);font-weight:800;letter-spacing:.8px}.loopline b{color:var(--cyan)}
+
+  section{padding:112px 0;position:relative}.split{display:grid;grid-template-columns:1fr 1fr;gap:74px;align-items:center}.section-tag{font-size:10px;letter-spacing:1.7px;color:var(--cyan);font-weight:800;text-transform:uppercase}.section-title{font-size:clamp(34px,4.8vw,58px);line-height:1.02;letter-spacing:-2.5px;margin:12px 0 18px}.section-copy{font-size:16px;color:var(--muted);line-height:1.7;max-width:580px}
+  .flowbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 22px 60px rgba(0,0,0,.28)}.flowhead{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .signal{margin-top:16px;padding:14px;border:1px solid #1E2444;background:#090B22;border-radius:10px}.signal strong{display:block;font-size:13px}.signal small{color:var(--danger);font-weight:700}.connector{width:1px;height:24px;background:linear-gradient(var(--cyan),transparent);margin:auto}.action{padding:14px;background:#0E1129;border:1px solid #1E2444;border-radius:10px;display:flex;justify-content:space-between;align-items:center}.action b{font-size:12px}.pill{font-size:9px;padding:4px 7px;border-radius:20px;background:rgba(12,192,223,.1);color:var(--cyan);font-weight:800}
+  .workorder{margin-top:10px;padding:14px;border-radius:10px;background:#06081A;border:1px solid #161B36}.wo-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:7px 0;border-bottom:1px solid #161B36}.wo-row:last-child{border-bottom:0}
+
+  .usp{background:#06081A;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.usp-head{text-align:center;max-width:760px;margin:0 auto 42px}.usp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.usp-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+  .usp-icon{width:34px;height:34px;border-radius:10px;border:1px solid var(--line-hi);display:flex;align-items:center;justify-content:center;background:rgba(163,116,255,.05);margin-bottom:20px}
+  .usp-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .usp-icon.c-cyan{color:var(--cyan-br);animation:glowCyan 3.4s ease-in-out infinite}
+  .usp-icon.c-purple{color:var(--purple-br);animation:glowPurple 3.4s ease-in-out infinite}
+  @keyframes glowCyan{0%,100%{box-shadow:0 0 0 rgba(12,192,223,0)}50%{box-shadow:0 0 14px rgba(12,192,223,.5)}}
+  @keyframes glowPurple{0%,100%{box-shadow:0 0 0 rgba(163,116,255,0)}50%{box-shadow:0 0 14px rgba(163,116,255,.5)}}
+  .usp-card h3{font-size:18px;margin:0 0 10px;letter-spacing:-.5px}.usp-card p{font-size:13px;line-height:1.65;color:var(--muted);margin:0}
+
+  .impactbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.impacttop{display:flex;justify-content:space-between;align-items:center;padding-bottom:13px;border-bottom:1px solid var(--line)}.status{font-size:9px;color:var(--purple-br);background:rgba(140,82,255,.12);padding:4px 7px;border-radius:20px;font-weight:800}.impactstep{display:grid;grid-template-columns:22px 1fr;gap:12px;padding:15px 0;border-bottom:1px solid #161B36}.impactstep:last-child{border-bottom:0}.num{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#0E1129;color:var(--cyan);font-weight:800;font-size:9px}.impactstep h4{font-size:12px;margin:0 0 5px}.impactstep p{font-size:11px;color:var(--muted);margin:0}.metricrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.metric{background:#06081A;border:1px solid #161B36;border-radius:8px;padding:10px}.metric b{display:block;font-size:17px}.metric small{font-size:8px;color:var(--soft)}
+
+  .cta{padding:120px 0 70px;text-align:center}.cta-panel{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;padding:92px 28px;background:linear-gradient(180deg,#06081A 0,#030410 100%)}.cta-panel .glow{width:420px;height:180px;left:50%;transform:translateX(-50%);bottom:-90px}.cta h2{font-size:clamp(38px,6vw,68px);line-height:1;letter-spacing:-3px;max-width:900px;margin:10px auto 18px}.cta p{max-width:680px;margin:0 auto 28px;color:var(--muted);line-height:1.65}.footer{display:flex;justify-content:space-between;align-items:center;color:var(--soft);font-size:11px;padding:28px 0 44px}
+  .social-row{display:flex;justify-content:center;gap:14px;margin-top:38px;padding-top:28px;border-top:1px solid var(--line);position:relative;z-index:2}
+  .social-item{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1px solid var(--line-hi);color:var(--muted)}
+  .social-item:hover{color:white;border-color:var(--purple-br)}
+  .social-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  @media(max-width:900px){
+    .navlinks a:not(.nav-cta){display:none}.nav-toggle{display:flex}.hero{padding-top:62px;min-height:auto}.dashboard-shell{margin-top:48px}.dash-grid{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr;gap:42px}.usp-grid{grid-template-columns:repeat(2,1fr)}section{padding:84px 0}.section-title{letter-spacing:-1.8px}.hero h1{letter-spacing:-3px}.marquee{gap:42px}.footer{flex-direction:column;gap:8px}
+  }
+  @media(max-width:560px){
+    .wrap{width:min(var(--max),calc(100% - 24px))}nav{height:68px}.nav-dropdown{top:68px}.brand{font-size:20px}.btn{padding:11px 14px}.hero{padding:48px 0 48px}.hero h1{font-size:46px;letter-spacing:-2.2px}.lead{font-size:15px}.dash-grid{grid-template-columns:1fr}.card{min-height:160px}.dashboard-shell{padding:10px;border-radius:13px;transform:none}.dash-top{height:42px}.logos{padding:18px 0}.marquee{font-size:17px;gap:34px}.loop{padding:28px 0}.loopline{line-height:1.6;gap:8px}.usp-grid{grid-template-columns:1fr}.usp-card{min-height:auto}.section-title{font-size:38px}.section-copy{font-size:15px}.metricrow{grid-template-columns:1fr 1fr}.cta-panel{padding:68px 18px}.cta h2{font-size:42px}.footer{text-align:center}
+  }
+
+  /* Stronger staged dashboard build - triggered when it enters the viewport */
+  .dashboard-shell{opacity:0;transform:perspective(1200px) rotateX(4deg) translateY(34px) scale(.985)}
+  .dashboard-shell .dash-top{opacity:0;transform:translateY(-8px)}
+  .dashboard-shell .card{opacity:0;transform:translateY(18px) scale(.985);animation:none}
+  .dashboard-shell .bars i{transform-origin:bottom;transform:scaleY(.08);opacity:.2;animation:none}
+  .dashboard-shell .linechart .stroke{stroke-dashoffset:380;animation:none}
+  .dashboard-shell .donut-wrap{transform:scale(.7) rotate(-18deg);opacity:0;animation:none}
+  .dashboard-shell .gauge-wrap{opacity:0;transform:translateY(10px) scale(.9);animation:none}
+  .dashboard-shell .insight{opacity:0;transform:translateX(-8px);animation:none}
+  .dashboard-shell.is-built{animation:dashEnter .9s cubic-bezier(.2,.75,.2,1) forwards}
+  .dashboard-shell.is-built .dash-top{animation:fadeSlide .45s .35s ease forwards}
+  .dashboard-shell.is-built .card{animation:cardBuild .55s ease forwards}
+  .dashboard-shell.is-built .card:nth-child(1){animation-delay:.55s}.dashboard-shell.is-built .card:nth-child(2){animation-delay:.72s}.dashboard-shell.is-built .card:nth-child(3){animation-delay:.89s}.dashboard-shell.is-built .card:nth-child(4){animation-delay:1.06s}.dashboard-shell.is-built .card:nth-child(5){animation-delay:1.23s}.dashboard-shell.is-built .card:nth-child(6){animation-delay:1.40s}
+  .dashboard-shell.is-built .bars i{animation:barBuild .7s 1.32s ease both}
+  .dashboard-shell.is-built .linechart .stroke{animation:draw 1.45s 1.45s ease forwards}
+  .dashboard-shell.is-built .donut-wrap{animation:donutBuild .65s 1.50s ease forwards}
+  .dashboard-shell.is-built .gauge-wrap{animation:gaugeBuild .6s 1.63s ease forwards}
+  .dashboard-shell.is-built .insight{animation:insightBuild .5s 1.78s ease forwards}
+  @keyframes dashEnter{to{opacity:1;transform:perspective(1200px) rotateX(1.6deg) translateY(0) scale(1)}}
+  @keyframes fadeSlide{to{opacity:1;transform:none}}
+  @keyframes cardBuild{to{opacity:1;transform:none}}
+  @keyframes barBuild{from{transform:scaleY(.08);opacity:.2}to{transform:scaleY(1);opacity:1}}
+  @keyframes donutBuild{to{transform:none;opacity:1}}
+  @keyframes gaugeBuild{to{opacity:1;transform:none}}
+  @keyframes insightBuild{to{opacity:1;transform:none}}
+  /* Four loop palette follows logo: purple -> light purple -> light cyan -> cyan */
+  .loopline{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+  .loopline .arrow{color:var(--text);opacity:.82}
+  .loop-sense{color:var(--purple)}
+  .loop-act{color:#B99AFF}
+  .loop-verify{color:#7BE7F5}
+  .loop-impact{color:var(--cyan)}
+  /* USP micro-interactions */
+  .usp-card{opacity:0;transform:translateY(18px);transition:transform .45s ease,opacity .45s ease,border-color .25s ease,box-shadow .25s ease}
+  .usp-card.reveal{opacity:1;transform:none}
+  .usp-card.reveal:hover{transform:translateY(-5px);border-color:#2B3363;box-shadow:0 16px 42px rgba(0,0,0,.22)}
+  .usp-card:nth-child(2) .usp-icon{animation-delay:.5s}.usp-card:nth-child(3) .usp-icon{animation-delay:1s}.usp-card:nth-child(4) .usp-icon{animation-delay:1.5s}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
+
+  /* Feature #1 — Operational Intelligence flow chain (signal -> action -> work order)
+     One reveal on first view, then loops while the section stays on screen. */
+  .flowbox .signal,.flowbox .action,.flowbox .workorder{opacity:0;transform:translateY(14px)}
+  .flowbox .connector{transform-origin:top;transform:scaleY(0);opacity:0}
+  .flowbox.is-built .signal{animation:flowIn .5s .1s ease forwards}
+  .flowbox.is-built .connector.c1{animation:flowLine .4s .55s ease forwards}
+  .flowbox.is-built .action{animation:flowIn .5s .85s ease forwards}
+  .flowbox.is-built .connector.c2{animation:flowLine .4s 1.3s ease forwards}
+  .flowbox.is-built .workorder{animation:flowIn .5s 1.6s ease forwards}
+  @keyframes flowIn{to{opacity:1;transform:none}}
+  @keyframes flowLine{to{opacity:1;transform:scaleY(1)}}
+
+  /* Feature #2 — Measured Outcomes impact chain. Same loop pattern. */
+  .impactbox .impactstep{opacity:0;transform:translateY(14px)}
+  .impactbox.is-built .impactstep.s1{animation:flowIn .5s .1s ease forwards}
+  .impactbox.is-built .impactstep.s2{animation:flowIn .5s .6s ease forwards}
+  .impactbox.is-built .impactstep.s3{animation:flowIn .5s 1.1s ease forwards}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="site-header" id="siteHeader">
+<div class="wrap">
+  <nav>
+    <div class="brand"><span class="k">klub</span><span class="colon">:</span><span class="h">house</span></div>
+    <div class="nav-right">
+      <div class="navlinks">
+        <a href="#platform">What</a><a href="#usp">Why</a><a href="#impact">How</a><a href="#contact">Contact</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navDropdown"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</div>
+</div>
+<div class="nav-dropdown" id="navDropdown">
+  <div class="wrap nav-dropdown-inner">
+    <a href="#platform">What</a>
+    <a href="#usp">Why</a>
+    <a href="#impact">How</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="glow"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-ring"></div>
+  <div class="wrap">
+    <div class="eyebrow">Circular Operations Intelligence</div>
+    <h1>Make every asset <span style="color:var(--purple-br)">work smarter</span>.<br/>Last longer.</h1>
+    <p class="lead">Connect equipment, maintenance, resource use and environmental signals into one intelligent Green Ops layer - built for longer asset lifecycles and measurable environmental impact.</p>
+    <div class="hero-actions"><a class="btn primary" href="https://circular-io.netlify.app" target="_blank" rel="noopener">View Live Demo</a><a class="btn ghost" href="#contact">Join Waitlist</a></div>
+
+    <div class="dashboard-shell" id="demo">
+      <div class="dash-top"><div class="dash-left"><div class="dash-menu-btn" aria-hidden="true"><span></span><span></span><span></span></div><div class="brand" style="font-size:15px"><span class="k">klub</span><span class="colon">:</span><span class="h">house</span></div></div><div class="dash-tag">Circular I/O</div></div>
+      <div class="dash-grid">
+        <div class="card"><div class="kicker">IoT · Power Meter</div><div class="ctitle">Energy Consumption</div><div class="big">328 kWh</div><div class="sub">This week · AC idle 4.2h/day avg</div><div class="bars"><i style="height:35%"></i><i style="height:48%"></i><i style="height:42%"></i><i style="height:66%"></i><i style="height:58%"></i><i style="height:86%"></i><i style="height:30%"></i></div></div>
+        <div class="card"><div class="kicker">IoT · Smart Meter</div><div class="ctitle">Water Usage</div><div class="big">29.3 m³</div><div class="sub">Within weekly average</div><div class="linechart"><svg viewBox="0 0 280 80" preserveAspectRatio="none"><path class="area" d="M0,62 L40,55 L80,58 L120,42 L160,45 L200,29 L240,36 L280,25 L280,80 L0,80Z"/><path class="stroke" d="M0,62 L40,55 L80,58 L120,42 L160,45 L200,29 L240,36 L280,25"/></svg></div></div>
+        <div class="card"><div class="kicker">Vendor · Waste Recovery</div><div class="ctitle">Waste Diverted</div><div class="big">86 kg</div><div class="sub">Diverted from landfill this week</div><div class="donut-wrap"><svg viewBox="0 0 96 96" width="72" height="72"><circle cx="48" cy="48" r="40" fill="none" stroke="#1E2444" stroke-width="14"/><circle cx="48" cy="48" r="40" fill="none" stroke="var(--purple)" stroke-width="14" stroke-linecap="round" stroke-dasharray="181 70" transform="rotate(-90 48 48)"/></svg><div class="legend"><div class="legend-row"><span class="legend-dot" style="background:var(--purple)"></span><span>Recycled</span><b>72%</b></div><div class="legend-row"><span class="legend-dot" style="background:#1E2444"></span><span>Residual</span><b>28%</b></div></div></div></div>
+        <div class="card"><div class="ctop"><div><div class="kicker">Combined</div><div class="ctitle" style="margin-bottom:0">Carbon Footprint</div></div><span class="live-badge"><span class="live-dot"></span>Live</span></div><div class="stack"><div class="row"><span>Energy</span><div class="track"><div class="fill" style="width:72%"></div></div><span>22kg</span></div><div class="row"><span>Water</span><div class="track"><div class="fill" style="width:46%;background:var(--purple-br)"></div></div><span>9kg</span></div><div class="row"><span>F&B</span><div class="track"><div class="fill" style="width:58%;background:var(--amber)"></div></div><span>12kg</span></div></div></div>
+        <div class="card"><div class="kicker">Composite Index</div><div class="ctitle">Circularity Score</div><div class="gauge-wrap"><svg viewBox="0 0 180 118"><defs><linearGradient id="ecoGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#22C55E"/><stop offset="50%" stop-color="#F59E0B"/><stop offset="100%" stop-color="#EF4444"/></linearGradient></defs><path d="M 20 95 A 70 70 0 0 1 160 95" fill="none" stroke="url(#ecoGrad)" stroke-width="13" stroke-linecap="round"/><line x1="90" y1="95" x2="114.7" y2="42.5" stroke="#EAEAF4" stroke-width="3" stroke-linecap="round"/><circle cx="90" cy="95" r="6" fill="#EAEAF4"/><circle cx="90" cy="95" r="3" fill="#F59E0B"/></svg><div class="gauge-val">64</div></div><div class="sub" style="text-align:center;margin-top:2px">Resource + Waste + Asset + Verified</div></div>
+        <div class="card"><div class="kicker">Recommendation</div><div class="ctitle">AI Insight</div><div class="insight">AC runtime is trending above baseline. Inspect Room 5-8 units before efficiency loss becomes recurring cost.</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="logos" aria-label="Technology ecosystem">
+  <div class="marquee">
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 11-14h-7z"/></svg>Tuya</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M3 8.5h13a3 3 0 1 0-3-3"/><path d="M3 16h13a3 3 0 1 1-3 3"/><path d="M3 12.2h18"/></svg>Sensibo</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="13" height="11" rx="2.2"/><path d="M16 10.4 21 8v9l-5-2.4"/></svg>EZVIZ</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>SALTO</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.3 12.4a10 10 0 0 1 13.4 0"/><path d="M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.2" r="1"/></svg>TP-Link</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Sensoneo</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 11-14h-7z"/></svg>Tuya</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M3 8.5h13a3 3 0 1 0-3-3"/><path d="M3 16h13a3 3 0 1 1-3 3"/><path d="M3 12.2h18"/></svg>Sensibo</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="13" height="11" rx="2.2"/><path d="M16 10.4 21 8v9l-5-2.4"/></svg>EZVIZ</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>SALTO</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.3 12.4a10 10 0 0 1 13.4 0"/><path d="M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.2" r="1"/></svg>TP-Link</span>
+    <span class="chip"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Sensoneo</span>
+  </div>
+</div>
+
+<div class="loop"><div class="wrap"><small>ONE LINK. FOUR CONTINUOUS LOOPS.</small><div class="loopline"><span class="loop-sense">SENSE</span><span class="arrow">→</span><span class="loop-act">ACT</span><span class="arrow">→</span><span class="loop-verify">VERIFY</span><span class="arrow">→</span><span class="loop-impact">IMPACT</span></div></div></div>
+
+<section id="platform">
+  <div class="glow" style="width:420px;height:420px;right:-140px;left:auto;top:60px;transform:none;opacity:.1"></div>
+  <div class="wrap split">
+    <div><div class="section-tag">Operational Intelligence</div><h2 class="section-title">Know what needs attention before it becomes a problem.</h2><p class="section-copy">Built for property and facilities teams, the system connects energy, water, asset and maintenance signals - detecting anomalies early and prioritising action before small issues become costly ones.</p></div>
+    <div class="flowbox"><div class="flowhead"><span>Signal Monitor</span><span>Live</span></div><div class="signal"><small>ANOMALY DETECTED</small><strong>AC energy draw +31% above baseline</strong><div class="sub">Linked asset: AC Unit · Room 5-8</div></div><div class="connector c1"></div><div class="action"><div><div class="kicker">AI RECOMMENDATION</div><b>Inspect filter load and refrigerant level</b></div><span class="pill">High Priority</span></div><div class="connector c2"></div><div class="workorder"><div class="wo-row"><span>Work Order</span><b>#WO-142</b></div><div class="wo-row"><span>Vendor</span><b>AC Technician</b></div><div class="wo-row"><span>Status</span><b style="color:var(--amber)">Assigned</b></div></div></div>
+  </div>
+</section>
+
+<section class="usp" id="usp">
+  <div class="glow" style="width:500px;height:280px;left:50%;top:0;transform:translateX(-50%);opacity:.08"></div>
+  <div class="wrap"><div class="usp-head"><div class="section-tag">Why Choose Us</div><h2 class="section-title" style="margin-bottom:12px">Built for circular operations, not passive reporting.</h2></div>
+    <div class="usp-grid">
+      <div class="usp-card"><div class="usp-icon c-cyan"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></div><h3>One Operational Layer</h3><p>Connect assets, resource use, maintenance and environmental performance in a single operational view.</p></div>
+      <div class="usp-card"><div class="usp-icon c-purple"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/><circle cx="12" cy="12" r="3.2"/></svg></div><h3>AI That Leads to Action</h3><p>Move from anomaly detection to prioritised maintenance decisions instead of stopping at analytics.</p></div>
+      <div class="usp-card"><div class="usp-icon c-cyan"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.2M4 6.8V12h5.2"/><path d="M20 12a8 8 0 0 1-14 5.2M20 17.2V12h-5.2"/></svg></div><h3>Lifecycle Extension by Design</h3><p>Repair-first, reuse, recovery and Upcycled Maintenance extend useful asset life before replacement.</p></div>
+      <div class="usp-card"><div class="usp-icon c-purple"><svg viewBox="0 0 24 24"><path d="M12 3c-3.6 2.4-6 5.7-6 9.6a6 6 0 0 0 12 0c0-3.9-2.4-7.2-6-9.6Z"/><path d="M9.2 14.2l1.9 1.9 3.7-3.9"/></svg></div><h3>Sustainable Management</h3><p>Track energy avoided, water saved, waste diverted and asset life gained from completed work.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="impact">
+  <div class="glow" style="width:420px;height:420px;left:-140px;top:40px;transform:none;opacity:.1"></div>
+  <div class="wrap split">
+    <div class="impactbox"><div class="impacttop"><div><div class="kicker">Measured Outcome</div><div class="ctitle" style="margin-bottom:0">Work Order #WO-142</div></div><span class="status">Resolved</span></div><div class="impactstep s1"><div class="num">1</div><div><h4>Action completed</h4><p>Filter cleaned and refrigerant level corrected.</p></div></div><div class="impactstep s2"><div class="num">2</div><div><h4>Performance verified</h4><p>Energy draw returned below the 30-day baseline.</p><div class="metricrow"><div class="metric"><b>-18%</b><small>ENERGY DRAW</small></div><div class="metric"><b>42 kWh</b><small>AVOIDED</small></div><div class="metric"><b>+8 mo</b><small>ASSET LIFE</small></div></div></div></div><div class="impactstep s3"><div class="num">3</div><div><h4>Impact ledger updated</h4><p>Verified savings are written back into the property's operational impact history.</p></div></div></div>
+    <div><div class="section-tag">Measured Outcomes</div><h2 class="section-title">Prove what changed after the work is done.</h2><p class="section-copy">Completed maintenance is measured against operational performance: lower energy and water use, waste diversion, and longer asset life from every work order.</p></div>
+  </div>
+</section>
+
+<section class="cta" id="contact"><div class="wrap"><div class="cta-panel"><div class="glow"></div><div class="section-tag">Circular I/O</div><h2>Turn property operations into measurable progress.</h2><p>See how one circular operating layer supports Eco-Tourism, smarter resource use and repair-first maintenance across hospitality, residential and small commercial spaces.</p><div class="hero-actions"><a class="btn primary" href="https://circular-io.netlify.app" target="_blank" rel="noopener">View Live Demo</a><a class="btn ghost" href="#contact">Join Waitlist</a></div>
+  <div class="social-row">
+    <a class="social-item" href="https://instagram.com/klubhouse.id" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></a>
+    <a class="social-item" href="mailto:klubhouse.id@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg></a>
+    <a class="social-item" href="https://wa.me/6282299988720" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-3.8 7.1 8.5 8.5 0 0 1-9 .4L3 20l1.1-5.1a8.38 8.38 0 0 1-1.1-4.1 8.5 8.5 0 1 1 18 .7Z"/></svg></a>
+  </div>
+</div><div class="footer"><span>Klubhouse © 2026</span><span>Circular Operations Intelligence</span></div></div></section>
+
+<script>
+(function(){
+  // Sticky nav background/blur once the page scrolls past the hero top.
+  var siteHeader = document.getElementById('siteHeader');
+  if(siteHeader){
+    var onHeaderScroll = function(){
+      siteHeader.classList.toggle('scrolled', window.scrollY > 24);
+    };
+    onHeaderScroll();
+    window.addEventListener('scroll', onHeaderScroll, { passive: true });
+  }
+
+  // Mobile nav dropdown toggle.
+  var navToggle = document.getElementById('navToggle');
+  var navDropdown = document.getElementById('navDropdown');
+  if(navToggle && navDropdown){
+    navToggle.addEventListener('click', function(){
+      var open = navDropdown.classList.toggle('open');
+      navToggle.classList.toggle('open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navDropdown.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        navDropdown.classList.remove('open');
+        navToggle.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Fires cb once, the first time el enters the viewport, then stops watching.
+  function observeOnce(el, cb){
+    if(!el) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ cb(); io.disconnect(); }
+      });
+    }, {threshold:.35});
+    io.observe(el);
+  }
+
+  // Restarts el's "is-built" animation every totalMs, for as long as it's called.
+  function replay(el){
+    el.classList.remove('is-built');
+    void el.offsetWidth; // force reflow so the animation can restart
+    el.classList.add('is-built');
+  }
+
+  // Loops replay(el) on an interval only while el is on screen; pauses (and
+  // resets) when scrolled away, so it always picks back up from the start.
+  function loopWhileVisible(el, totalMs){
+    if(!el) return;
+    var timer = null;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          if(!timer){ replay(el); timer = setInterval(function(){ replay(el); }, totalMs); }
+        } else if(timer){
+          clearInterval(timer); timer = null; el.classList.remove('is-built');
+        }
+      });
+    }, {threshold:.4});
+    io.observe(el);
+  }
+
+  // Hero dashboard — one-time build the moment it's visible.
+  var dash = document.querySelector('.dashboard-shell');
+  observeOnce(dash, function(){ dash.classList.add('is-built'); });
+
+  // Why Choose Us cards — staggered one-time reveal.
+  var uspGrid = document.querySelector('.usp-grid');
+  var uspCards = document.querySelectorAll('.usp-card');
+  observeOnce(uspGrid, function(){
+    uspCards.forEach(function(card, i){
+      setTimeout(function(){ card.classList.add('reveal'); }, i * 140);
+    });
+  });
+
+  // Feature #1 (Operational Intelligence) and Feature #2 (Measured Outcomes)
+  // replay their build sequence on a loop for as long as they're in view.
+  loopWhileVisible(document.querySelector('.flowbox'), 4600);
+  loopWhileVisible(document.querySelector('.impactbox'), 4200);
+})();
+</script>
+
+
+</body>
+</html>
